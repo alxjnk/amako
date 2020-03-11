@@ -8,12 +8,12 @@ try:
         # Create a new record
         # sql = "SELECT * FROM oc_product"
         sql = "INSERT INTO oc_product (image, manufacturer_id, price, quantity, product_id) VALUES"
-        with open('./amakoparts/output.csv', 'rb') as csvfile:
+        with open('./amakoparts/output.csv') as csvfile:
             spamreader = csv.DictReader(csvfile)
+            sql = "INSERT INTO oc_product (image, manufacturer_id, price, quantity, product_id) VALUES"
             for row in spamreader:
                 print(row)
-                # sql = sql + "(%s,%s,%s,%s,%s)".format(row['image'], row['manufacturer'], row['price'], row['quantity'], row['title'])
-        print(sql)
+                sql = sql + '({},{},{},{},{})'.format(row['img'], row['manufacturer'], row['price'], row['quantity'], row['title'])
         # sql = """LOAD DATA INFILE
         #         '/home/agronova/parse/amako/amakoparts/output.csv'
         #         INTO TABLE oc_product
@@ -33,13 +33,10 @@ try:
         #         else:
         #             print(row) 
 
-        # cursor.execute('INSERT INTO testcsv(names, \
-        #   classes, mark )' \
-        #   'VALUES("%s", "%s", "%s")',
-        #   row)
-        # cursor.execute(sql)
-        # result = cursor.fetchone()
-        # print(result)
+        
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        print(result)
 
     # connection is not autocommit by default. So you must commit to save
     # your changes.
