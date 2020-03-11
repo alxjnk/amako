@@ -7,7 +7,7 @@ try:
     with con.cursor() as cursor:
         # Create a new record
         # sql = "INSERT INTO `users` (`email`, `password`) VALUES (%s, %s)"
-        sql = """LOAD DATA LOCAL INFILE 
+        sql = """LOAD DATA INFILE 
                 '/home/agronova/parse/amako/amakoparts/output.csv'
                 INTO TABLE oc_product  
                 FIELDS TERMINATED BY ',' 
