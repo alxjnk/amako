@@ -1,7 +1,7 @@
 import pymysql
  
-con = pymysql.connect('127.0.0.1', 'agronova_parse', 
-    '3c91250b!!!', 'agronova_bs')
+con = pymysql.connect('127.0.0.1', 'agronova_as', 
+    '_ccZ9a(f$wpB', 'agronova_bs')
  
 try:
     with con.cursor() as cursor:
