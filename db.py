@@ -11,7 +11,8 @@ try:
         with open('./amakoparts/output.csv', encoding="utf-8") as csvfile:
             spamreader = csv.DictReader(csvfile)
             for row in spamreader:
-                sql = sql + "(%s,%s,%s,%s,%s)".format(row['image'], row['manufacturer'], row['price'], row['quantity'], row['title'])
+                print(row)
+                # sql = sql + "(%s,%s,%s,%s,%s)".format(row['image'], row['manufacturer'], row['price'], row['quantity'], row['title'])
         print(sql)
         # sql = """LOAD DATA INFILE
         #         '/home/agronova/parse/amako/amakoparts/output.csv'
