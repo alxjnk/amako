@@ -9,12 +9,9 @@ try:
         # sql = "SELECT * FROM oc_product"
         sql = "INSERT INTO oc_product (image, manufacturer_id, price, quantity, product_id) VALUES"
         with open('./amakoparts/output.csv', newline='') as csvfile:
-            spamreader = csv.reader(csvfile, delimiter=',')
+            spamreader = csv.DictReader(csvfile)
             for row in spamreader:
-                if row[0] == 'DT_RowId':
-                    pass
-                else:
-                    sql = sql + "(%s,%s,%s,%s,%s)".format(row[3], row[4], row[7], row[8], row[11])
+                sql = sql + "(%s,%s,%s,%s,%s)".format(row['image'], row['manufacturer'], row['price'], row['quantity'], row['title'])
         print(sql)
         # sql = """LOAD DATA INFILE
         #         '/home/agronova/parse/amako/amakoparts/output.csv'
