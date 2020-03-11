@@ -8,7 +8,7 @@ try:
         # Create a new record
         # sql = "SELECT * FROM oc_product"
         sql = "INSERT INTO oc_product (image, manufacturer_id, price, quantity, product_id) VALUES"
-        with open('./amakoparts/output.csv', newline='') as csvfile:
+        with open('./amakoparts/output.csv') as csvfile:
             spamreader = csv.DictReader(csvfile)
             for row in spamreader:
                 sql = sql + "(%s,%s,%s,%s,%s)".format(row['image'], row['manufacturer'], row['price'], row['quantity'], row['title'])
