@@ -1,6 +1,6 @@
 import pymysql
  
-con = pymysql.connect('localhost', 'agronova_parse', 
+con = pymysql.connect('127.0.0.1', 'agronova_parse', 
     '3c91250b!!!', 'agronova_bs')
  
 try:
