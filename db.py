@@ -14,7 +14,7 @@ try:
                 if row[0] == 'DT_RowId':
                     pass
                 else:
-                    sql = sql + "(%s,%s,%s,%s,%s)".format(row[3], row[4], row[7], row[11])
+                    sql = sql + "(%s,%s,%s,%s,%s)".format(row[3], row[4], row[7], row[8], row[11])
         print(sql)
         # sql = """LOAD DATA INFILE
         #         '/home/agronova/parse/amako/amakoparts/output.csv'
