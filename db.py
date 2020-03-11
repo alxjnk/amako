@@ -7,7 +7,14 @@ try:
     with con.cursor() as cursor:
         # Create a new record
         # sql = "INSERT INTO `users` (`email`, `password`) VALUES (%s, %s)"
-        sql = "SELECT * from oc_product"
+        sql = "LOAD DATA LOCAL INFILE  
+                '/home/agronova/parse/amako/amakoparts/output.csv'
+                INTO TABLE oc_product  
+                FIELDS TERMINATED BY ',' 
+                ENCLOSED BY '"'
+                LINES TERMINATED BY '\n'
+                IGNORE 1 ROWS
+                (@dummy,@dummy, @dummy, image, manufacturer_id, @dummy, @dummy, price, quantity, @dummy, @dummy, product_id);"
         cursor.execute(sql)
         result = cursor.fetchone()
         print(result)
