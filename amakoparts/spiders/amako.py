@@ -4,7 +4,9 @@ import re
 
 
 def float_serializer(value):
-    return float(re.search(r'\d+.\d+', value).group())
+    if value:
+        return float(re.search(r'\d+.\d+', value).group())
+    return value
 
 
 def quantity_serializer(value):
@@ -48,7 +50,7 @@ class MySpider(scrapy.Spider):
 
     def parse_manufacturer(self, response):
         jsonresponse = json.loads(
-            response.body_as_unicode().replace("'", '"').strip('()'))
+            response.body_as_unicode())
         manufacturer = response.meta.get('manufacturer')
         for item in jsonresponse['data']:
             product = Product(item)
