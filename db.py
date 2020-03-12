@@ -14,7 +14,7 @@ try:
             for line in f:
                 sql = """INSERT INTO oc_product (image, manufacturer_id, price, quantity, product_id) VALUES"""
                 data = json.loads(line)
-                sql = sql + ' ({},{},{},{},{}),'.format(data['img'], data['manufacturer'], data['price'], data['quantity'], data['title'])
+                sql = sql + ' ({},{},{},{},{})'.format(data['img'], data['manufacturer'], data['price'], data['quantity'], data['title'])
                 cursor.execute(sql)
                 result = cursor.fetchone()
                 print(result)
