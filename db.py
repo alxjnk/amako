@@ -14,7 +14,7 @@ try:
             sql = "INSERT INTO oc_product (image, manufacturer_id, price, quantity, product_id) VALUES"
             for line in f:
                 data = json.loads(line)
-                sql = sql + '({},{},{},{},{})'.format(data['img'], data['manufacturer'], data['price'], data['quantity'], data['title'])
+                sql = sql + ' ({},{},{},{},{})'.format(data['img'], data['manufacturer'], data['price'], data['quantity'], data['title'])
         # print(sql)
         # sql = """LOAD DATA INFILE
         #         '/home/agronova/parse/amako/amakoparts/output.csv'
