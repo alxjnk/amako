@@ -24,6 +24,7 @@ class AmakopartsPipeline(object):
     def process_item(self, item, spider):
         self.cur.execute("insert into oc_product (image, manufacturer_id, price, quantity, model) VALUES (%s,%s,%s,%s,%s)",
         (item['img_link'], item['manufacturer'],item['price'],item['quantity'],item['title']))
+        print(self.cur.fetchone())
         for product in item['replacements']:
             self.cur.execute("insert into oc_product_related (product_id, related_id) VALUES (%s,%s)",
             (item['title'], product))
