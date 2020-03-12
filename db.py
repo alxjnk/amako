@@ -10,7 +10,7 @@ try:
         # sql = "SELECT * FROM oc_product"
         sql = "INSERT INTO oc_product (image, manufacturer_id, price, quantity, product_id) VALUES"
 
-        with open('./amakoparts/spiders/items.json') as f:
+        with open('./amakoparts/spiders/items.json', encoding="windows-1251") as f:
             sql = "INSERT INTO oc_product (image, manufacturer_id, price, quantity, product_id) VALUES"
             for line in f:
                 data = json.loads(line)

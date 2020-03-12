@@ -58,7 +58,7 @@ import json
 class JsonWriterPipeline(object):
 
     def open_spider(self, spider):
-        self.file = open('items.json', 'w')
+        self.file = open('items.json', 'w', encoding="windows-1251")
 
     def close_spider(self, spider):
         self.file.close()
