@@ -1,5 +1,6 @@
 import pymysql
-import csv
+import json
+
 con = pymysql.connect('127.0.0.1', 'agronova_as',
     '_ccZ9a(f$wpB', 'agronova_bs')
 
@@ -8,12 +9,13 @@ try:
         # Create a new record
         # sql = "SELECT * FROM oc_product"
         sql = "INSERT INTO oc_product (image, manufacturer_id, price, quantity, product_id) VALUES"
-        with open('./amakoparts/output.csv',  newline='', encoding="windows-1251") as csvfile:
-            spamreader = csv.DictReader(csvfile)
+
+        with open('./amakoparts/spiders/items.json') as f:
             sql = "INSERT INTO oc_product (image, manufacturer_id, price, quantity, product_id) VALUES"
-            for row in spamreader:
-                print(row)
-                sql = sql + '({},{},{},{},{})'.format(row['img'], row['manufacturer'], row['price'], row['quantity'], row['title'])
+            for line in f:
+                data = json.loads(line)
+                sql = sql + '({},{},{},{},{})'.format(data['img'], data['manufacturer'], data['price'], data['quantity'], data['title'])
+        print(sql)
         # sql = """LOAD DATA INFILE
         #         '/home/agronova/parse/amako/amakoparts/output.csv'
         #         INTO TABLE oc_product
@@ -50,4 +52,6 @@ try:
     #     print(result)
 finally:
     con.close()
+
+        
 
