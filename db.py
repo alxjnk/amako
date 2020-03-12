@@ -11,10 +11,13 @@ try:
         # sql = "INSERT INTO oc_product (image, manufacturer_id, price, quantity, product_id) VALUES"
 
         with open('./amakoparts/spiders/items.json', encoding="windows-1251") as f:
-            sql = "INSERT INTO oc_product (image, manufacturer_id, price, quantity, product_id) VALUES"
             for line in f:
+                sql = """INSERT INTO oc_product (image, manufacturer_id, price, quantity, product_id) VALUES"""
                 data = json.loads(line)
                 sql = sql + ' ({},{},{},{},{}),'.format(data['img'], data['manufacturer'], data['price'], data['quantity'], data['title'])
+                cursor.execute(sql)
+                result = cursor.fetchone()
+                print(result)
         # print(sql)
         # sql = """LOAD DATA INFILE
         #         '/home/agronova/parse/amako/amakoparts/output.csv'
@@ -36,9 +39,7 @@ try:
         #             print(row) 
 
         
-        cursor.execute(sql)
-        result = cursor.fetchone()
-        print(result)
+        
 
     # connection is not autocommit by default. So you must commit to save
     # your changes.
