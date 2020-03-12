@@ -8,14 +8,14 @@ try:
     with con.cursor() as cursor:
         # Create a new record
         # sql = "SELECT * FROM oc_product"
-        sql = "INSERT INTO oc_product (image, manufacturer_id, price, quantity, product_id) VALUES"
+        # sql = "INSERT INTO oc_product (image, manufacturer_id, price, quantity, product_id) VALUES"
 
         with open('./amakoparts/spiders/items.json', encoding="windows-1251") as f:
             sql = "INSERT INTO oc_product (image, manufacturer_id, price, quantity, product_id) VALUES"
             for line in f:
                 data = json.loads(line)
                 sql = sql + '({},{},{},{},{})'.format(data['img'], data['manufacturer'], data['price'], data['quantity'], data['title'])
-        print(sql)
+        # print(sql)
         # sql = """LOAD DATA INFILE
         #         '/home/agronova/parse/amako/amakoparts/output.csv'
         #         INTO TABLE oc_product
