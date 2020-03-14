@@ -29,17 +29,22 @@ class AmakopartsPipeline(object):
         self.cur.execute("insert into oc_product_description (name, description, meta_title, meta_description, language_id) VALUES (%s,%s,%s,%s,%s)",
         (item['title'], item['title'], item['title'], item['title'], 1))
 
-        self.cur.execute("""INSERT IGNORE INTO oc_manufacturer (manufacturer_id, name, image)
-                            SELECT * FROM (SELECT %s, %s, %s) AS tmp
-                            WHERE NOT EXISTS (
-                                SELECT name FROM oc_manufacturer WHERE name = %s
-                            ) LIMIT 1""",
-        (item['manufacturer'], item['manufacturer'],
-         item['manufacturer_img'], item['manufacturer']))
-
         for product in item['replacements']:
             self.cur.execute("insert into oc_product_related (product_id, related_id) VALUES (%s,%s)",
             (item['title'], product))
+
+        result = self.cur.execute("SELECT * FROM oc_manufacturer WHERE name = %s", item['manufacturer'])
+        print(result)
+
+        # self.cur.execute("""INSERT IGNORE INTO oc_manufacturer (manufacturer_id, name, image)
+        #                     SELECT * FROM (SELECT %s, %s, %s) AS tmp
+        #                     WHERE NOT EXISTS (
+        #                         SELECT name FROM oc_manufacturer WHERE name = %s
+        #                     ) LIMIT 1""",
+        # (item['manufacturer'], item['manufacturer'],
+        #  item['manufacturer_img'], item['manufacturer']))
+
+        
         self.connection.commit()
         return item
 
