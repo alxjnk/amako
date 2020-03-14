@@ -77,7 +77,6 @@ class MySpider(scrapy.Spider):
                 replacements.append(row[1] + ' ' + row[0])
             if len(row) == 4:
                 replacements.append(row[2] + ' ' + row[0])
-        print('REPLACEMENTS', replacements)
         if img == None:
             img = 'no image'
         else:
