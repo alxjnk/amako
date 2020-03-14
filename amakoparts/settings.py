@@ -65,8 +65,8 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   # 'amakoparts.pipelines.AmakopartsPipeline': 800,
-   'amakoparts.pipelines.CsvPipeline': 300
+   'amakoparts.pipelines.AmakopartsPipeline': 800,
+   # 'amakoparts.pipelines.CsvPipeline': 300
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

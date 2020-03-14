@@ -25,15 +25,17 @@ class AmakopartsPipeline(object):
     def process_item(self, item, spider):
         self.cur.execute("insert into oc_product (image, manufacturer_id, price, quantity, SKU) VALUES (%s,%s,%s,%s,%s)",
         (item['img_link'], item['manufacturer'], item['price'], item['quantity'], item['title']))
+        
         self.cur.execute("insert into oc_product_description (name, description, meta_title, meta_description, language_id) VALUES (%s,%s,%s,%s,%s)",
         (item['title'], item['title'], item['title'], item['title'], 1))
+
         self.cur.execute("""INSERT INTO oc_manufacturer (manufacturer_id, name, image)
                             SELECT * FROM (SELECT '%s', '%s', '%s') AS tmp
                             WHERE NOT EXISTS (
                                 SELECT name FROM oc_manufacturer WHERE name = '%s'
                             ) LIMIT 1""",
         (item['manufacturer'], item['manufacturer'],
-         item['manufacturer_img'], item['manufacturer'])
+         item['manufacturer_img'], item['manufacturer']))
 
         for product in item['replacements']:
             self.cur.execute("insert into oc_product_related (product_id, related_id) VALUES (%s,%s)",
