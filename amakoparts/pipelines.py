@@ -37,7 +37,7 @@ class AmakopartsPipeline(object):
             "SELECT * FROM oc_manufacturer WHERE name = %s", item['manufacturer'])
         if result == 0:
             self.cur.execute("INSERT INTO oc_manufacturer (manufacturer_id, name, image) VALUES (%s, %s, %s)",
-                             item['manufacturer'], item['manufacturer'], item['manufacturer_img'])
+                             (item['manufacturer'], item['manufacturer'], item['manufacturer_img']))
         print(result)
 
         # self.cur.execute("""INSERT IGNORE INTO oc_manufacturer (manufacturer_id, name, image)
