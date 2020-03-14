@@ -14,7 +14,8 @@ from scrapy.exporters import CsvItemExporter
 
 class AmakopartsPipeline(object):
     def open_spider(self, spider):
-        self.connection = pymysql.connect('127.0.0.1', 'agronova_as', '_ccZ9a(f$wpB', 'agronova_bs')
+        self.connection = pymysql.connect(
+            '127.0.0.1', 'agronova_as', '_ccZ9a(f$wpB', 'agronova_bs')
         self.cur = self.connection.cursor()
 
     def close_spider(self, spider):
@@ -22,9 +23,18 @@ class AmakopartsPipeline(object):
         self.connection.close()
 
     def process_item(self, item, spider):
-        self.cur.execute("insert into oc_product (image, manufacturer_id, price, quantity, model) VALUES (%s,%s,%s,%s,%s)",
-        (item['img_link'], item['manufacturer'],item['price'],item['quantity'],item['title']))
-        print(self.cur.fetchone())
+        self.cur.execute("insert into oc_product (image, manufacturer_id, price, quantity, SKU) VALUES (%s,%s,%s,%s,%s)",
+        (item['img_link'], item['manufacturer'], item['price'], item['quantity'], item['title']))
+        self.cur.execute("insert into oc_product_description (name, description, meta_title, meta_description, language_id) VALUES (%s,%s,%s,%s,%s)",
+        (item['title'], item['title'], item['title'], item['title'], 1))
+        self.cur.execute("""INSERT INTO oc_manufacturer (manufacturer_id, name, image)
+                            SELECT * FROM (SELECT '%s', '%s', '%s') AS tmp
+                            WHERE NOT EXISTS (
+                                SELECT name FROM oc_manufacturer WHERE name = '%s'
+                            ) LIMIT 1""",
+        (item['manufacturer'], item['manufacturer'],
+         item['manufacturer_img'], item['manufacturer'])
+
         for product in item['replacements']:
             self.cur.execute("insert into oc_product_related (product_id, related_id) VALUES (%s,%s)",
             (item['title'], product))
@@ -41,7 +51,7 @@ class AmakopartsPipeline(object):
 #         return pipeline
 
 #     def spider_opened(self, spider):
-#         self.file = open('output.csv', 'w+', encoding="windows-1251")
+#         self.file = open('output.csv', 'w+b')
 #         self.exporter = CsvItemExporter(self.file)
 #         self.exporter.start_exporting()
 

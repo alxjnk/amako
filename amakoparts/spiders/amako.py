@@ -28,6 +28,7 @@ class Product(scrapy.Item):
     img = scrapy.Field()
     replacements = scrapy.Field()
     img_link = scrapy.Field()
+    manufacturer_img = scrapy.Field()
 
 
 class MySpider(scrapy.Spider):
@@ -42,9 +43,12 @@ class MySpider(scrapy.Spider):
             '//*[@id="List"]/li/a/@href').getall())
         titles = ('response url', response.selector.xpath(
             '//*[@id="List"]/li/a/@title').getall())
-        for href, title in zip(hrefs, titles):
-            for h, t in zip(href, title):
-                yield scrapy.http.Request('https://parts.amaco.ua/services/search/data.html?draw=1&columns%5B0%5D%5Bdata%5D=title&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=false&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=manufacturer&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=false&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=partid&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=false&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=quantity&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=false&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=price&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=false&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length={1}&search%5Bvalue%5D=&search%5Bregex%5D=false&lang=1&manufacturer={0}&_=1577614837927'.format(h[2:-1], ln), callback=self.parse_manufacturer, meta={'manufacturer': t}, dont_filter=True)
+        man_imgs = ('response url', response.selector.xpath(
+            '//*[@id="List"]/li/a/img/@src').getall())
+        
+        for href, title, imgs in zip(hrefs, titles, man_imgs):
+            for h, t, i in zip(href, title, imgs):
+                yield scrapy.http.Request('https://parts.amaco.ua/services/search/data.html?draw=1&columns%5B0%5D%5Bdata%5D=title&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=false&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=manufacturer&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=false&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=partid&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=false&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=quantity&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=false&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=price&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=false&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length={1}&search%5Bvalue%5D=&search%5Bregex%5D=false&lang=1&manufacturer={0}&_=1577614837927'.format(h[2:-1], ln), callback=self.parse_manufacturer, meta={'manufacturer': t, 'man_img': i}, dont_filter=True)
                 # break
 # https://parts.amaco.ua/ru/part/4ba5315f-f513-11e3-b5c5-00155d012119
 
@@ -52,9 +56,12 @@ class MySpider(scrapy.Spider):
         jsonresponse = json.loads(
             response.body_as_unicode())
         manufacturer = response.meta.get('manufacturer')
+        man_img = response.meta.get('man_img')
+
         for item in jsonresponse['data']:
             product = Product(item)
             product['manufacturer'] = manufacturer
+            product['manufacturer_img'] = 'https://parts.amaco.ua/ru' + man_img;
             yield scrapy.http.Request('https://parts.amaco.ua/ru/part/{0}'.format(item['DT_RowId']), callback=self.parse_parts, meta={'product': product}, dont_filter=True)
             # break
 
