@@ -29,7 +29,7 @@ class AmakopartsPipeline(object):
         self.cur.execute("insert into oc_product_description (name, description, meta_title, meta_description, language_id) VALUES (%s,%s,%s,%s,%s)",
         (item['title'], item['title'], item['title'], item['title'], 1))
 
-        self.cur.execute("""INSERT INTO oc_manufacturer (manufacturer_id, name, image)
+        self.cur.execute("""INSERT IGNORE INTO oc_manufacturer (manufacturer_id, name, image)
                             SELECT * FROM (SELECT %s, %s, %s) AS tmp
                             WHERE NOT EXISTS (
                                 SELECT name FROM oc_manufacturer WHERE name = %s
