@@ -23,8 +23,8 @@ class AmakopartsPipeline(object):
         self.connection.close()
 
     def process_item(self, item, spider):
-        self.cur.execute("insert into oc_product (image, manufacturer_id, price, quantity, SKU) VALUES (%s,%s,%s,%s,%s)",
-                         (item['img_link'], item['manufacturer'], item['price'], item['quantity'], item['title']))
+        self.cur.execute("insert into oc_product (image, manufacturer_id, price, quantity, SKU, model) VALUES (%s,%s,%s,%s,%s)",
+                         (item['img_link'], item['manufacturer'], item['price'], item['quantity'], item['title'], item['title']))
 
         self.cur.execute("insert into oc_product_description (name, description, meta_title, meta_description, language_id) VALUES (%s,%s,%s,%s,%s)",
                          (item['title'], item['title'], item['title'], item['title'], 1))
@@ -36,7 +36,8 @@ class AmakopartsPipeline(object):
         self.cur.execute(
             "SELECT * FROM oc_manufacturer WHERE name = %s", item['manufacturer'])
 
-        manufacturer_id,	name,	image,	sort_order = self.cur.fetchone()
+        manufacturer_id, name, image, sort_order = self.cur.fetchone()
+        print(name)
         if name:
             pass
         else:
