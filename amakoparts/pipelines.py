@@ -25,7 +25,7 @@ class AmakopartsPipeline(object):
     def process_item(self, item, spider):
         self.cur.execute("insert into oc_product (image, manufacturer_id, price, quantity, SKU, model) VALUES (%s,%s,%s,%s,%s, %s)",
                          (item['img_link'], item['manufacturer'], item['price'], item['quantity'], item['title'], item['title']))
-        self.cur.execute("insert into oc_product_store (store_id) VALUES (%s)",
+        self.cur.execute("insert into oc_product_to_store (store_id) VALUES (%s)",
                          (0))
 
         self.cur.execute("insert into oc_product_description (name, description, meta_title, meta_description, language_id) VALUES (%s,%s,%s,%s,%s)",
