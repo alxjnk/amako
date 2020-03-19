@@ -41,7 +41,7 @@ class AmakopartsPipeline(object):
         result = self.cur.fetchone()
         print(result)
         if result == None:
-            self.cur.execute("INSERT INTO oc_manufacturer (name, image) VALUES (%s, %s, %s)",
+            self.cur.execute("INSERT INTO oc_manufacturer (name, image) VALUES (%s, %s)",
                              (item['manufacturer'], item['manufacturer_img']))
 
         self.connection.commit()
