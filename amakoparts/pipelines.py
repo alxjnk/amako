@@ -36,11 +36,9 @@ class AmakopartsPipeline(object):
         self.cur.execute(
             "SELECT * FROM oc_manufacturer WHERE name = %s", item['manufacturer'])
 
-        manufacturer_id, name, image, sort_order = self.cur.fetchone()
-        print(name)
-        if name:
-            pass
-        else:
+        result = self.cur.fetchone()
+        print(result)
+        if result:
             self.cur.execute("INSERT INTO oc_manufacturer (name, image) VALUES (%s, %s, %s)",
                              (item['manufacturer'], item['manufacturer_img']))
 
