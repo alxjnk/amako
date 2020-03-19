@@ -33,20 +33,15 @@ class AmakopartsPipeline(object):
             self.cur.execute("insert into oc_product_related (product_id, related_id) VALUES (%s,%s)",
                              (item['title'], product))
 
-        result = self.cur.execute(
+        self.cur.execute(
             "SELECT * FROM oc_manufacturer WHERE name = %s", item['manufacturer'])
-        if result == 0:
-            self.cur.execute("INSERT INTO oc_manufacturer (manufacturer_id, name, image) VALUES (%s, %s, %s)",
-                             (item['manufacturer'], item['manufacturer'], item['manufacturer_img']))
-        print(result)
 
-        # self.cur.execute("""INSERT IGNORE INTO oc_manufacturer (manufacturer_id, name, image)
-        #                     SELECT * FROM (SELECT %s, %s, %s) AS tmp
-        #                     WHERE NOT EXISTS (
-        #                         SELECT name FROM oc_manufacturer WHERE name = %s
-        #                     ) LIMIT 1""",
-        # (item['manufacturer'], item['manufacturer'],
-        #  item['manufacturer_img'], item['manufacturer']))
+        manufacturer_id,	name,	image,	sort_order = self.cur.fetchone()
+        if name:
+            pass
+        else:
+            self.cur.execute("INSERT INTO oc_manufacturer (name, image) VALUES (%s, %s, %s)",
+                             (item['manufacturer'], item['manufacturer_img']))
 
         self.connection.commit()
         return item
