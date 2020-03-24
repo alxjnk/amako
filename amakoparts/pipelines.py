@@ -29,12 +29,12 @@ class AmakopartsPipeline(object):
         result = self.cur.fetchone()
         print(result)
         if result == None:
-            self.cur.execute("INSERT INTO oc_manufacturer (name, image) VALUES (%s, %s)",
-                             (item['manufacturer'], item['manufacturer_img']))
+            self.cur.execute("INSERT INTO oc_manufacturer (manufacturer_id, name, image) VALUES (%s, %s, %s)",
+                             (item['manufacturerid'], item['manufacturer'], item['manufacturer_img']))
 
 
         self.cur.execute("insert into oc_product (product_id, image, manufacturer_id, price, quantity, SKU, model) VALUES (%s,%s,%s,%s,%s, %s, %s)",
-                         (item['title'], item['img_link'], item['manufacturer'], item['price'], item['quantity'], item['title'], item['title']))
+                         (item['title'], item['img_link'], item['manufacturerid'], item['price'], item['quantity'], item['title'], item['title']))
         self.cur.execute("insert into oc_product_to_store (product_id, store_id) VALUES (%s, %s)",
                          (item['title'],0))
 
