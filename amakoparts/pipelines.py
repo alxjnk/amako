@@ -11,7 +11,7 @@ import pymysql
 from scrapy import signals
 from scrapy.exporters import CsvItemExporter
 
-
+cur_man = 0;
 class AmakopartsPipeline(object):
     def open_spider(self, spider):
         self.connection = pymysql.connect(
@@ -23,18 +23,6 @@ class AmakopartsPipeline(object):
         self.connection.close()
 
     def process_item(self, item, spider):
-        self.cur.execute("insert into oc_product (image, manufacturer_id, price, quantity, SKU, model) VALUES (%s,%s,%s,%s,%s, %s)",
-                         (item['img_link'], item['manufacturer'], item['price'], item['quantity'], item['title'], item['title']))
-        self.cur.execute("insert into oc_product_to_store (store_id) VALUES (%s)",
-                         (0))
-
-        self.cur.execute("insert into oc_product_description (name, description, meta_title, meta_description, language_id) VALUES (%s,%s,%s,%s,%s)",
-                         (item['title'], item['title'], item['title'], item['title'], 1))
-
-        for product in item['replacements']:
-            self.cur.execute("insert into oc_product_related (product_id, related_id) VALUES (%s,%s)",
-                             (item['title'], product))
-
         self.cur.execute(
             "SELECT * FROM oc_manufacturer WHERE name = %s", item['manufacturer'])
 
@@ -43,6 +31,21 @@ class AmakopartsPipeline(object):
         if result == None:
             self.cur.execute("INSERT INTO oc_manufacturer (name, image) VALUES (%s, %s)",
                              (item['manufacturer'], item['manufacturer_img']))
+
+
+        self.cur.execute("insert into oc_product (product_id, image, manufacturer_id, price, quantity, SKU, model) VALUES (%s,%s,%s,%s,%s, %s, %s)",
+                         (item['title'], item['img_link'], item['manufacturer'], item['price'], item['quantity'], item['title'], item['title']))
+        self.cur.execute("insert into oc_product_to_store (product_id, store_id) VALUES (%s, %s)",
+                         (item['title'],0))
+
+        self.cur.execute("insert into oc_product_description (product_id, name, description, meta_title, meta_description, language_id) VALUES (%s,%s,%s,%s,%s, %s)",
+                         (item['title'], item['title'], item['title'], item['title'],item['title'], 1))
+
+        for product in item['replacements']:
+            self.cur.execute("insert into oc_product_related (product_id, related_id) VALUES (%s,%s)",
+                             (item['title'], product))
+
+        
 
         self.connection.commit()
         return item
