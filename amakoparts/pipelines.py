@@ -19,9 +19,19 @@ class AmakopartsPipeline(object):
         self.cur = self.connection.cursor()
 
     def close_spider(self, spider):
+        self.cur.execute("SELECT * FROM oc_product_related")
+ 
+        # rows = self.cur.fetchall()
+        # for row in rows:
+        #     self.cur.execute("SELECT TOP 1 FROM oc_product WHERE oc.product.model = %s", (row['related_id']))
+        #     id = self.cur.fetcone();
+        #     self.cur.execute("INSERT INTO FROM oc_product_related () WHERE oc.product.model = %s", (row['related_id']))
+
+        #     print(row["id"], row["name"])
+          
+
         self.cur.close()
         self.connection.close()
-
     def process_item(self, item, spider):
         self.cur.execute(
             "SELECT * FROM oc_manufacturer WHERE name = %s", item['manufacturer'])
@@ -30,19 +40,19 @@ class AmakopartsPipeline(object):
         print(result)
         if result == None:
             self.cur.execute("INSERT INTO oc_manufacturer (manufacturer_id, name, image) VALUES (%s, %s, %s)",
-                             (item['manufacturerid'], item['manufacturer'], item['manufacturer_img']))
+                             (item['manufacturer'].lower(), item['manufacturer'], item['manufacturer_img']))
 
 
-        self.cur.execute("insert into oc_product (product_id, image, manufacturer_id, price, quantity, SKU, model) VALUES (%s,%s,%s,%s,%s, %s, %s)",
-                         (item['title'], item['img_link'], item['manufacturerid'], item['price'], item['quantity'], item['title'], item['title']))
-        self.cur.execute("insert into oc_product_to_store (product_id, store_id) VALUES (%s, %s)",
-                         (item['title'],0))
+        self.cur.execute("insert into oc_product ( image, manufacturer_id, price, quantity, SKU, model) VALUES (%s,%s,%s,%s,%s, %s)",
+                         ( item['img_link'], item['manufacturer'].lower(), item['price'], item['quantity'], item['title'], item['title']))
+        self.cur.execute("insert into oc_product_to_store ( store_id) VALUES (%s)",
+                         (0))
 
-        self.cur.execute("insert into oc_product_description (product_id, name, description, meta_title, meta_description, language_id) VALUES (%s,%s,%s,%s,%s, %s)",
-                         (item['title'], item['title'], item['title'], item['title'],item['title'], 1))
+        self.cur.execute("insert into oc_product_description ( name, description, meta_title, meta_description, language_id) VALUES (%s,%s,%s,%s,%s)",
+                         ( item['title'], item['title'], item['title'],item['title'], 1))
 
         for product in item['replacements']:
-            self.cur.execute("insert into oc_product_related (product_id, related_id) VALUES (%s,%s)",
+            self.cur.execute("insert into oc_product_related ( product_id, related_id) VALUES (%s,%s)",
                              (item['title'], product))
 
         
