@@ -55,7 +55,7 @@ class AmakopartsPipeline(object):
         # print(id)
         for product in item['replacements']:
             self.cur.execute("insert into oc_product_related ( product_id, related_id) VALUES (%s,%s)",
-                             (item['title'],, product))
+                             (item['title'], product))
 
         
 
