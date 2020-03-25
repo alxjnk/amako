@@ -42,7 +42,6 @@ class AmakopartsPipeline(object):
             self.cur.execute("INSERT INTO oc_manufacturer (manufacturer_id, name, image) VALUES (%s, %s, %s)",
                              (item['manufacturer'].lower(), item['manufacturer'], item['manufacturer_img']))
 
-
         self.cur.execute("insert into oc_product ( image, manufacturer_id, price, quantity, SKU, model) VALUES (%s,%s,%s,%s,%s, %s)",
                          ( item['img_link'], item['manufacturer'].lower(), item['price'], item['quantity'], item['title'], item['title']))
         self.cur.execute("insert into oc_product_to_store ( store_id) VALUES (%s)",
@@ -50,10 +49,12 @@ class AmakopartsPipeline(object):
 
         self.cur.execute("insert into oc_product_description ( name, description, meta_title, meta_description, language_id) VALUES (%s,%s,%s,%s,%s)",
                          ( item['title'], item['title'], item['title'],item['title'], 1))
-
+        
+        id = self.cur.fetchone();
+        print(id)
         for product in item['replacements']:
             self.cur.execute("insert into oc_product_related ( product_id, related_id) VALUES (%s,%s)",
-                             (item['title'], product))
+                             (id, product))
 
         
 
