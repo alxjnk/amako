@@ -49,12 +49,13 @@ class AmakopartsPipeline(object):
 
         self.cur.execute("insert into oc_product_description ( name, description, meta_title, meta_description, language_id) VALUES (%s,%s,%s,%s,%s)",
                          ( item['title'], item['title'], item['title'],item['title'], 1))
-        
-        id = self.cur.fetchone();
-        print(id)
+        # self.cur.execute(
+        #     "SELECT * FROM oc_manufacturer WHERE name = %s", item['manufacturer'])
+        # id = self.cur.fetchone();
+        # print(id)
         for product in item['replacements']:
             self.cur.execute("insert into oc_product_related ( product_id, related_id) VALUES (%s,%s)",
-                             (id, product))
+                             (item['title'],, product))
 
         
 
