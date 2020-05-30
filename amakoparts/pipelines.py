@@ -7,7 +7,7 @@
 # import psycopg2
 import json
 import pymysql
-
+# ssh inc_@i.ua@uavip03.twinservers.net -L localhost:3306:localhost:3306 -p21098
 from scrapy import signals
 from scrapy.exporters import CsvItemExporter
 
@@ -28,7 +28,7 @@ class AmakopartsPipeline(object):
         #     self.cur.execute("INSERT INTO FROM oc_product_related () WHERE oc.product.model = %s", (row['related_id']))
 
         #     print(row["id"], row["name"])
-          
+        #   knMx781Od4
 
         self.cur.close()
         self.connection.close()
@@ -37,13 +37,16 @@ class AmakopartsPipeline(object):
             "SELECT * FROM oc_manufacturer WHERE name = %s", item['manufacturer'])
 
         result = self.cur.fetchone()
-        print(result)
         if result == None:
-            self.cur.execute("INSERT INTO oc_manufacturer (manufacturer_id, name, image) VALUES (%s, %s, %s)",
-                             (item['manufacturer'].lower(), item['manufacturer'], item['manufacturer_img']))
-
+            self.cur.execute("INSERT INTO oc_manufacturer (name, image) VALUES (%s, %s)",
+                             (item['manufacturer'], item['manufacturer_img']))
+            self.cur.execute("insert into oc_manufacturer_to_store ( store_id) VALUES (%s, %s)",
+                         (0))
+        else:
+            man_id = result.manufacturer_id
+        
         self.cur.execute("insert into oc_product ( image, manufacturer_id, price, quantity, SKU, model) VALUES (%s,%s,%s,%s,%s, %s)",
-                         ( item['img_link'], item['manufacturer'].lower(), item['price'], item['quantity'], item['title'], item['title']))
+                         ( item['img_link'], man_id, item['price'], item['quantity'], item['title'], item['title']))
         self.cur.execute("insert into oc_product_to_store ( store_id) VALUES (%s)",
                          (0))
 
@@ -63,26 +66,27 @@ class AmakopartsPipeline(object):
         return item
 
 
-# class CsvPipeline(object):
-#     @classmethod
-#     def from_crawler(cls, crawler):
-#         pipeline = cls()
-#         crawler.signals.connect(pipeline.spider_opened, signals.spider_opened)
-#         crawler.signals.connect(pipeline.spider_closed, signals.spider_closed)
-#         return pipeline
+class CsvPipeline(object):
+    filename = ''
+    @classmethod
+    def from_crawler(cls, crawler):
+        pipeline = cls()
+        crawler.signals.connect(pipeline.spider_opened, signals.spider_opened)
+        crawler.signals.connect(pipeline.spider_closed, signals.spider_closed)
+        return pipeline
 
-#     def spider_opened(self, spider):
-#         self.file = open('output.csv', 'w+b')
-#         self.exporter = CsvItemExporter(self.file)
-#         self.exporter.start_exporting()
+    def spider_opened(self, spider):
+        self.file = open('{}.csv'.format('output'), 'w+b')
+        self.exporter = CsvItemExporter(self.file)
+        self.exporter.start_exporting()
 
-#     def spider_closed(self, spider):
-#         self.exporter.finish_exporting()
-#         self.file.close()
+    def spider_closed(self, spider):
+        self.exporter.finish_exporting()
+        self.file.close()
 
-#     def process_item(self, item, spider):
-#         self.exporter.export_item(item)
-#         return item
+    def process_item(self, item, spider):
+        self.exporter.export_item(item)
+        return item
 
 # import json
 
